@@ -130,5 +130,11 @@ This project is a decentralized voting system built with Flask, MongoDB, and Eth
 
 ---
 
+##Default login for admin
+-voter ID - admin
+-password - admin123
+
+---
+
 ## License
 This project is for educational purposes. Please check the repository for license details.
