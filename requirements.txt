@@ -1,0 +1,6 @@
+flask
+web3.py
+pyfingerprint
+pymongo
+pyserial
+cryptography

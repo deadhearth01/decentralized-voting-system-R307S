@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card shadow p-4">
+    <h2 class="text-center text-primary">Register</h2>
+    <form method="POST">
+        <div class="mb-3">
+            <label for="voter_id" class="form-label">Voter ID</label>
+            <input type="text" class="form-control" id="voter_id" name="voter_id" required>
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" class="form-control" id="password" name="password" required>
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Register</button>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block title %}Citizen Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Citizen Dashboard</h2>
+    <a href="{{ url_for('citizen_logout') }}" class="btn btn-danger mb-3">Logout</a>
+
+    <!-- Election Details -->
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Election Details</h5>
+            <p><strong>Start Date:</strong> {{ election.start_date }}</p>
+            <p><strong>End Date:</strong> {{ election.end_date }}</p>
+            <p><strong>Status:</strong> {{ election.status }}</p>
+        </div>
+    </div>
+
+    <!-- Announcements -->
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Announcements</h5>
+            {% if announcements %}
+            <ul class="list-group">
+                {% for announcement in announcements %}
+                <li class="list-group-item">
+                    <p>{{ announcement.message }}</p>
+                    <small class="text-muted">{{ announcement.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</small>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p>No announcements yet.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Error Message -->
+    {% if error %}
+    <div class="alert alert-danger" role="alert">
+        {{ error }}
+    </div>
+    {% endif %}
+
+    <!-- Voting Form -->
+    {% if candidates is defined and candidates %}
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Cast Your Vote</h5>
+            <form method="GET" id="voteForm">
+                <div class="mb-3">
+                    <label for="candidate" class="form-label">Select Candidate</label>
+                    <select class="form-select" id="candidate" name="candidate" onchange="updateFormAction()" required>
+                        <option value="" disabled selected>Select a candidate</option>
+                        {% for candidate in candidates %}
+                        <option value="{{ candidate.id }}">{{ candidate.name }} ({{ candidate.party }}) - {{ candidate.state }} - Age: {{ candidate.age }} (Votes: {{ candidate.votes }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary mt-2" disabled id="submitButton" onclick="return confirm('Are you sure you want to vote for this candidate? This action cannot be undone.')">Submit</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Live Vote Count -->
+    <div class="card shadow">
+        <div class="card-body">
+            <h5 class="card-title">Live Vote Count</h5>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Party</th>
+                        <th>State</th>
+                        <th>Age</th>
+                        <th>Votes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for candidate in candidates %}
+                    <tr>
+                        <td>{{ candidate.name }}</td>
+                        <td>{{ candidate.party }}</td>
+                        <td>{{ candidate.state }}</td>
+                        <td>{{ candidate.age }}</td>
+                        <td>{{ candidate.votes }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        function updateFormAction() {
+            const candidateId = document.getElementById('candidate').value;
+            const form = document.getElementById('voteForm');
+            const submitButton = document.getElementById('submitButton');
+            if (candidateId) {
+                form.action = "{{ url_for('vote', candidate_id='') }}" + candidateId;
+                submitButton.disabled = false;
+            } else {
+                form.action = "";
+                submitButton.disabled = true;
+            }
+        }
+    </script>
+    {% endif %}
+</div>
+{% endblock %}
